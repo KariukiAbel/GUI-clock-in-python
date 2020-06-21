@@ -3,6 +3,7 @@ from time import localtime
 from datetime import timedelta, datetime
 from math import sin, cos, pi
 from threading import Thread
+from logging import root
 
 try:
     from tkinter import *
@@ -47,7 +48,7 @@ class mapper:
     
 class makeThread(Thread):
     def __init__(self, func):
-        Tread.__init__(self)
+        Thread.__init__(self)
         self.___action = func
         self.debug = False
         
@@ -60,4 +61,86 @@ class makeThread(Thread):
     def run(self):
         if (self.debug):
             print("Thread begin")
-        self.___action()     
+        self.___action()  
+        
+        
+class clock:
+    def __init__(self, root, deltahours=0, sImage=True, w=400, h=400, useThread=False):
+        self.world = [-1, -1, 1, 1]
+        self.imgPath = './images/fluminense.png' #image path
+        if hasPIL and os.path.exists(self.imgPath):
+            self.showImage = sImage
+            
+        else:
+            self.showImage = False
+            
+            
+        self.setColors()
+        self.circlesize = 0.09
+        self._ALL = 'handles'
+        self.root = root
+        width, height = w, h
+        self.pad = width / 16
+        
+        if self.showImage:
+            self.fluImg = Image.open(self.imgPath)
+            
+            
+        self.root.bind("<Escape>", lambda _: root.destroy())
+        self.delta = timedelta(hours = deltahours)
+        self.canvas = Canvas(root, width=width, height=height, background=self.bgcolor)
+        viewport = (self.pad, self.pad, width - self.pad, height - self.pad)
+        self.T = mapper(self.world, viewport)
+        self.root.title('Clock') 
+        self.canvas,bind("<Configure>", self.resize)
+        self.root.bind("<KeyPress-i>", self.toggleImage)
+        self.canvas.pack(fill=BOTH, expand=YES)
+        
+        
+        if useThread:
+            st = makeThread(self.poll)
+            st.debug = True
+            st.start()
+        else:
+            self.poll()
+            
+            
+    def resize(self, event):
+        sc = self.canvas
+        sc.delete(ALL) #erases the whole canvas
+        width = sc.winfo_width()
+        height = sc.winfo_height()
+        
+        imgSize = min(width, height)
+        self.pad = imgSize / 16
+        viewport = (self.pad, self.pad, width - self.pad, height - self.pad)
+        self.T = mapper(self.world, viewport)
+        
+        if self.showImage:
+            flu = self.fluImg.resize((int(0.8 * 0.8 * imgSize), int(0.8 * imgSize)), Image.ANTIALIAS)
+            self.flu = ImageTK.PhotoImage(flu)
+            sc.create_image(width / 2, height / 2, image=self.flu)
+            
+        else:
+            self.canvas.create_rectangle([[0, 0], [width, height]], fill=self.bgcolor)
+            
+        self.redraw() #redraws the clock
+        
+        
+    def setColors(self):
+        if self.showImage:
+            self.bgcolor = 'antique white'
+            self.timecolor = 'dark orange'
+            self.circlecolor = 'dark green'
+            
+        else:
+            self.bgcolor = '#000000'
+            self.timecolor = '#ffffff'
+            self.circlecolor = '#808080'
+            
+            
+    def toggleImage(self, event):
+        if hasPIL and os.path.exists(self.imgPath):
+            self.showImage = not self.showImage
+            self.setColors()
+            self.resize(event)
