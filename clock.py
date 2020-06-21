@@ -42,4 +42,22 @@ class mapper:
 
 
     def windowToViewport(self, x1, y1, x2, y2):
-        return self.__windowToViewport(x1, y2), self.__windowToViewport(x2, y2)        
+        return self.__windowToViewport(x1, y2), self.__windowToViewport(x2, y2)
+    
+    
+class makeThread(Thread):
+    def __init__(self, func):
+        Tread.__init__(self)
+        self.___action = func
+        self.debug = False
+        
+        
+    def __del__(self):
+        if (self.debug):
+            print("Thread end")
+            
+            
+    def run(self):
+        if (self.debug):
+            print("Thread begin")
+        self.___action()     
