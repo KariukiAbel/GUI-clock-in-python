@@ -4,6 +4,7 @@ from datetime import timedelta, datetime
 from math import sin, cos, pi
 from threading import Thread
 from logging import root
+from pylint.test.functional.invalid_name import argv
 
 try:
     from tkinter import *
@@ -144,3 +145,47 @@ class clock:
             self.showImage = not self.showImage
             self.setColors()
             self.resize(event)
+            
+            
+def redraw(self):
+    start = pi / 2
+    step = pi / 6
+    for i in range(12):
+        angle = start -i * step
+        x, y = cos(angle), sin(angle)
+        self.paintcircle(x, y)
+    self.paintless()
+    if not self.showImage:
+        self.paintcircle(0, 0) #draws circle at the center of the clock
+        
+        
+        
+        
+        
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    if len(argv) > 2:
+        try:
+            deltahours = int(argv[1])
+            sImage = (argv[2] = 'True')
+            w = int(argv[3])
+            h = int(argv[4])
+            t = int(argv[5] = 'True')
+        except ValueError:
+            print("A timezone is expected.")
+            return 1
+        
+    else:
+        deltahours = 3
+        sImage = True
+        w = h = 400
+        t = False
+        
+    root = Tk()
+    root.geometry('+0+0')
+    clock(root, deltahours, sImage, w, h, t)
+    root.mainloop()
+    
+    if __name__ = '__main__':
+        sys.exit(main())
