@@ -3,8 +3,6 @@ from time import localtime
 from datetime import timedelta, datetime
 from math import sin, cos, pi
 from threading import Thread
-from logging import root
-from pylint.test.functional.invalid_name import argv
 
 try:
     from tkinter import *
@@ -93,7 +91,7 @@ class clock:
         viewport = (self.pad, self.pad, width - self.pad, height - self.pad)
         self.T = mapper(self.world, viewport)
         self.root.title('Clock') 
-        self.canvas,bind("<Configure>", self.resize)
+        self.canvas.bind("<Configure>", self.resize)
         self.root.bind("<KeyPress-i>", self.toggleImage)
         self.canvas.pack(fill=BOTH, expand=YES)
         
@@ -157,9 +155,6 @@ def redraw(self):
     self.paintless()
     if not self.showImage:
         self.paintcircle(0, 0) #draws circle at the center of the clock
-        
-        
-        
         
         
 def main(argv=None):
